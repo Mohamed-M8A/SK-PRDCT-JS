@@ -209,23 +209,23 @@ if (validOriginal || validDiscounted) {
           <span class="save-amount">${formatPrice(diff)} ${getCurrencySymbol()}</span>
         `;
 
-        // 🎨 ألوان حسب قيمة التوفير المكافئة (تدرج متناسق واحترافي)
+        // 🎨 ألوان حسب قيمة التوفير المكافئة (تدرجات متناسقة)
         let color = "#7f8c8d"; // رمادي بسيط
-        if (diffInSAR >= 100 && diffInSAR < 250) color = "#16a085";   // تركواز غامق
-        else if (diffInSAR < 400) color = "#1abc9c";                  // تركواز فاتح
-        else if (diffInSAR < 600) color = "#2ecc71";                  // أخضر ناعم
-        else if (diffInSAR < 900) color = "#f1c40f";                  // ذهبي
-        else if (diffInSAR < 1200) color = "#e67e22";                 // برتقالي
-        else if (diffInSAR < 1600) color = "#c0392b";                 // أحمر دافئ
-        else if (diffInSAR < 2000) color = "#f5008b";                 // وردي قوي
-        else if (diffInSAR < 3000) color = "#8e44ad";                 // بنفسجي ملكي
-        else color = "#f39c12";                                       // ذهبي لامع نهائي
+        if (diffInSAR >= 100 && diffInSAR < 250) color = "#16a085";
+        else if (diffInSAR < 400) color = "#1abc9c";
+        else if (diffInSAR < 600) color = "#2ecc71";
+        else if (diffInSAR < 900) color = "#f1c40f";
+        else if (diffInSAR < 1200) color = "#e67e22";
+        else if (diffInSAR < 1600) color = "#c0392b";
+        else if (diffInSAR < 2000) color = "#f5008b";
+        else if (diffInSAR < 3000) color = "#8e44ad";
+        else color = "#f39c12";
 
         savingEl.style.color = color;
         savingEl.style.fontWeight = "bold";
         savingEl.title = `الفرق بين السعر القديم (${formatPrice(finalOriginal)}) والجديد (${formatPrice(finalDiscounted)})`;
 
-        // 🔥 إضافة الجيف (مع تحكم ذكي في الحجم عبر الجافا سكربت)
+        // 🔥 إضافة الجيف (مع حل نهائي لمشكلة الحجم على الجوال)
         const saveAmount = savingEl.querySelector(".save-amount");
         if (diffInSAR >= 500 && !saveAmount.querySelector("img")) {
           const fireGif = document.createElement("img");
@@ -233,24 +233,17 @@ if (validOriginal || validDiscounted) {
             "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj5J9EL4a9cV3VWmcK1ZYD6OYEB-1APv9gggocpaa7jAJXdgvX8Q7QiaAZC9NxcN25f8MTRSYD6SKwT1LSjL0SB1ovJH1SSkRmqH2y3f1NzWGkC0BE-gpj5bTc1OKi3Rfzh44sAAJSvOS5uq7Ut9ETN-V9LgKim0dkmEVmqUWa-2ZGA7FvMAYrVaJgn/w199-h200/fire%20(1).gif";
           fireGif.alt = "🔥";
 
-          // 📱 تحكم ديناميكي في الحجم حسب نوع الجهاز
-          const isMobile = window.innerWidth <= 600;
-          const baseSize = isMobile ? 16 : 22;
-
+          // 📱 حل مؤكد: تحديد الحجم بالنسبة لحجم النص (em) وليس البكسل
+          const baseEm = window.innerWidth <= 600 ? 0.9 : 1.2; // أصغر على الجوال
           fireGif.style.cssText = `
-            width: ${baseSize}px;
-            height: ${baseSize}px;
+            width: ${baseEm}em;
+            height: auto;
+            max-height: 1.3em;
             vertical-align: middle;
-            margin-left: 5px;
+            margin-left: 0.35em;
             display: inline-block;
             object-fit: contain;
           `;
-
-          // ✨ تكبير بسيط للنار لو التوفير ضخم جدًا (إحساس Premium)
-          if (diffInSAR >= 2000) {
-            fireGif.style.width = `${baseSize + 6}px`;
-            fireGif.style.height = `${baseSize + 6}px`;
-          }
 
           saveAmount.appendChild(fireGif);
         }
