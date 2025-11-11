@@ -223,14 +223,15 @@ if (validOriginal || validDiscounted) {
         const saveAmount = savingEl.querySelector(".save-amount");
         if (diffInSAR >= 500 && !saveAmount.querySelector("img")) {
           const fireGif = document.createElement("img");
+          fireGif.classList.add("fire-gif");
           fireGif.src =
-            "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj5J9EL4a9cV3VWmcK1ZYD6OYEB-1APv9gggocpaa7jAJXdgvX8Q7QiaAZC9NxcN25f8MTRSYD6SKwT1LSjL0SB1ovJH1SSkRmqH2y3f1NzWGkC0BE-gpj5bTc1OKi3Rfzh44sAAJSvOS5uq7Ut9ETN-V9LgKim0dkmEVmqUWa-2ZGA7FvMAYrVaJgn/w199-h200/fire%20(1).gif";
+          "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj5J9EL4a9cV3VWmcK1ZYD6OYEB-1APv9gggocpaa7jAJXdgvX8Q7QiaAZC9NxcN25f8MTRSYD6SKwT1LSjL0SB1ovJH1SSkRmqH2y3f1NzWGkC0BE-gpj5bTc1OKi3Rfzh44sAAJSvOS5uq7Ut9ETN-V9LgKim0dkmEVmqUWa-2ZGA7FvMAYrVaJgn/w199-h200/fire%20(1).gif";
           fireGif.alt = "🔥";
 
           // ⚙️ تحكم كامل هنا
           function setFireGifSize(fireGif) {
             const isMobile = window.innerWidth <= 600;
-            const gifSize = isMobile ? 18 : 26; // px بدلاً من em
+            const gifSize = isMobile ? 18 : 26;
             const marginL = isMobile ? 4 : 6;
 
             fireGif.style.cssText = `
