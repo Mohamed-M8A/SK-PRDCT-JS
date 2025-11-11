@@ -164,7 +164,6 @@ const discountEl = document.querySelector(".discount-percentage");
 const original = countryData["price-original"];
 const discounted = countryData["price-discounted"];
 
-// ✅ تحقق من القيم
 const validOriginal = parseFloat(original) || null;
 const validDiscounted = parseFloat(discounted) || null;
 
@@ -175,7 +174,6 @@ if (validOriginal || validDiscounted) {
       ? validDiscounted
       : finalOriginal;
 
-  // 💰 عرض الأسعار
   if (originalEl && validOriginal) {
     originalEl.textContent = `${formatPrice(validOriginal)} ${getCurrencySymbol()}`;
   } else if (originalEl) {
@@ -188,13 +186,11 @@ if (validOriginal || validDiscounted) {
     discountedEl.textContent = "";
   }
 
-  // 🔢 حساب الفرق فقط لو في خصم حقيقي
   const diff = finalOriginal - finalDiscounted;
   if (diff > 0) {
     const rate = exchangeRates[countryCode] || 1;
     const diffInSAR = diff * rate;
 
-    // 💡 لو أقل من 50 ريال سعودي → نخفي الخصم والتوفير فقط
     if (diffInSAR < 50) {
       if (savingEl) savingEl.innerHTML = "";
       if (discountEl)
@@ -209,8 +205,7 @@ if (validOriginal || validDiscounted) {
           <span class="save-amount">${formatPrice(diff)} ${getCurrencySymbol()}</span>
         `;
 
-        // 🎨 ألوان حسب قيمة التوفير المكافئة (تدرجات متناسقة)
-        let color = "#7f8c8d"; // رمادي بسيط
+        let color = "#7f8c8d";
         if (diffInSAR >= 100 && diffInSAR < 250) color = "#16a085";
         else if (diffInSAR < 400) color = "#1abc9c";
         else if (diffInSAR < 600) color = "#2ecc71";
@@ -225,7 +220,6 @@ if (validOriginal || validDiscounted) {
         savingEl.style.fontWeight = "bold";
         savingEl.title = `الفرق بين السعر القديم (${formatPrice(finalOriginal)}) والجديد (${formatPrice(finalDiscounted)})`;
 
-        // 🔥 إضافة الجيف (مع حل نهائي لمشكلة الحجم على الجوال)
         const saveAmount = savingEl.querySelector(".save-amount");
         if (diffInSAR >= 500 && !saveAmount.querySelector("img")) {
           const fireGif = document.createElement("img");
@@ -233,14 +227,16 @@ if (validOriginal || validDiscounted) {
             "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj5J9EL4a9cV3VWmcK1ZYD6OYEB-1APv9gggocpaa7jAJXdgvX8Q7QiaAZC9NxcN25f8MTRSYD6SKwT1LSjL0SB1ovJH1SSkRmqH2y3f1NzWGkC0BE-gpj5bTc1OKi3Rfzh44sAAJSvOS5uq7Ut9ETN-V9LgKim0dkmEVmqUWa-2ZGA7FvMAYrVaJgn/w199-h200/fire%20(1).gif";
           fireGif.alt = "🔥";
 
-          // 📱 حل مؤكد: تحديد الحجم بالنسبة لحجم النص (em) وليس البكسل
-          const baseEm = window.innerWidth <= 600 ? 0.9 : 1.2; // أصغر على الجوال
+          // ✅ الحجم الجديد المتناسق مع .price-saving
+          const isMobile = window.innerWidth <= 600;
+          const gifSize = isMobile ? 1.1 : 1.35; // em متناسبة مع النص
+
           fireGif.style.cssText = `
-            width: ${baseEm}em;
+            width: ${gifSize}em;
             height: auto;
-            max-height: 1.3em;
+            max-height: 1.5em;
             vertical-align: middle;
-            margin-left: 0.35em;
+            margin-left: 0.4em;
             display: inline-block;
             object-fit: contain;
           `;
