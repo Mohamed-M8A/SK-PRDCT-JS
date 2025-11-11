@@ -228,9 +228,9 @@ if (validOriginal || validDiscounted) {
           fireGif.alt = "🔥";
 
   // ⚙️ تحكم كامل هنا
-  const isMobile = window.innerWidth <= 600;
-const gifSize = isMobile ? 1.2 : 1.5; 
-const marginL = isMobile ? 0.3 : 0.4;
+const isMobile = window.innerWidth <= 600;
+const gifSize = isMobile ? 0.9 : 1.2;
+const marginL = isMobile ? 0.25 : 0.35;
 
 fireGif.style.cssText = `
   width: ${gifSize}em;
@@ -240,7 +240,7 @@ fireGif.style.cssText = `
   display: inline-block;
   object-fit: contain;
   position: relative;
-  top: -0.1em;
+  top: -0.08em;
 `;
 
   saveAmount.appendChild(fireGif);
