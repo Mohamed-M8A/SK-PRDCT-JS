@@ -227,36 +227,34 @@ if (validOriginal || validDiscounted) {
             "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj5J9EL4a9cV3VWmcK1ZYD6OYEB-1APv9gggocpaa7jAJXdgvX8Q7QiaAZC9NxcN25f8MTRSYD6SKwT1LSjL0SB1ovJH1SSkRmqH2y3f1NzWGkC0BE-gpj5bTc1OKi3Rfzh44sAAJSvOS5uq7Ut9ETN-V9LgKim0dkmEVmqUWa-2ZGA7FvMAYrVaJgn/w199-h200/fire%20(1).gif";
           fireGif.alt = "🔥";
 
-  // ⚙️ تحكم كامل هنا
-function setGifSize() {
-  const isMobile = window.innerWidth <= 600;
-  const gifSize = isMobile ? 0.8 : 1; // وسط مابين صغير وواضح
-  const marginL = isMobile ? 0.25 : 0.35;
+          // ⚙️ تحكم كامل هنا
+          function setFireGifSize(fireGif) {
+            const isMobile = window.innerWidth <= 600;
+            const gifSize = isMobile ? 18 : 26; // px بدلاً من em
+            const marginL = isMobile ? 4 : 6;
 
-  fireGif.style.cssText = `
-    width: ${gifSize}em;
-    height: ${gifSize}em;
-    vertical-align: middle;
-    margin-left: ${marginL}em;
-    display: inline-block;
-    object-fit: contain;
-    position: relative;
-    top: -0.08em;
-  `;
-}
+            fireGif.style.cssText = `
+              width: ${gifSize}px;
+              height: ${gifSize}px;
+              vertical-align: middle;
+              margin-left: ${marginL}px;
+              display: inline-block;
+              object-fit: contain;
+              position: relative;
+              top: -0.08em;
+            `;
+          }
 
-// أول مرة تتحمل الصفحة
-setGifSize();
+          setFireGifSize(fireGif);
+          window.addEventListener("resize", () => setFireGifSize(fireGif));
 
-// تحديث عند تغيير حجم الشاشة
-window.addEventListener("resize", setGifSize);
-
-  saveAmount.appendChild(fireGif);
+          saveAmount.appendChild(fireGif);
         }
       }
     }
   }
-}    
+}
+
 // ==============================
 // ✅ الرسم البياني 
 // ==============================
