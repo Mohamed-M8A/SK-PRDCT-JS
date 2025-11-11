@@ -229,14 +229,14 @@ if (validOriginal || validDiscounted) {
 
   // ⚙️ تحكم كامل هنا
 const isMobile = window.innerWidth <= 600;
-const gifSize = isMobile ? 0.9 : 1.2;
-const marginL = isMobile ? 0.25 : 0.35;
-
+const gifSize = isMobile ? 0.4 : 0.6;
+const marginL = isMobile ? 0.2 : 0.3;
+           
 fireGif.style.cssText = `
-  width: 2em;
-  height: 2em;
+  width: ${gifSize}em;
+  height: ${gifSize}em;
   vertical-align: middle;
-  margin-left: 2em;
+  margin-left: ${marginL}em;
   display: inline-block;
   object-fit: contain;
   position: relative;
