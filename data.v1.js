@@ -157,18 +157,18 @@ if (!hasShipping || !isAvailable) {
      💰 الأسعار + الخصم + التوفير
   =================================================== */
   const originalEl = document.querySelector(".price-original");
-  const discountedEl = document.querySelector(".price-discounted");
-  const savingEl = document.querySelector(".price-saving");
-  const discountEl = document.querySelector(".discount-percentage");
+const discountedEl = document.querySelector(".price-discounted");
+const savingEl = document.querySelector(".price-saving");
+const discountEl = document.querySelector(".discount-percentage");
 
-  const original = countryData["price-original"];
-  const discounted = countryData["price-discounted"];
+const original = countryData["price-original"];
+const discounted = countryData["price-discounted"];
 
-  // تحقق من القيم
-  const validOriginal = parseFloat(original) || null;
-  const validDiscounted = parseFloat(discounted) || null;
+// تحقق من القيم
+const validOriginal = parseFloat(original) || null;
+const validDiscounted = parseFloat(discounted) || null;
 
-  if (validOriginal || validDiscounted) {
+if (validOriginal || validDiscounted) {
 
   const finalOriginal = validOriginal || validDiscounted;
   const finalDiscounted =
@@ -183,12 +183,11 @@ if (!hasShipping || !isAvailable) {
     originalEl.textContent = "";
   }
 
-if (discountedEl && validDiscounted) {
-  discountedEl.textContent = `${formatPrice(validDiscounted)} ${getCurrencySymbol()}`;
-} else if (discountedEl) {
-  discountedEl.textContent = "";
-}
-
+  if (discountedEl && validDiscounted) {
+    discountedEl.textContent = `${formatPrice(validDiscounted)} ${getCurrencySymbol()}`;
+  } else if (discountedEl) {
+    discountedEl.textContent = "";
+  }
 
   // حساب الفرق فقط لو في خصم حقيقي
   const diff = finalOriginal - finalDiscounted;
@@ -197,12 +196,14 @@ if (discountedEl && validDiscounted) {
     const diffInSAR = diff * rate;
 
     // لو أقل من 50 ريال سعودي → نخفي الخصم والتوفير فقط
-      if (diffInSAR < 50) {
+    if (diffInSAR < 50) {
       if (savingEl) savingEl.innerHTML = "";
-      if (discountEl) discountEl.textContent = `${Math.round((diff / finalOriginal) * 100)}%`;
-      } else {
+      if (discountEl)
+        discountEl.textContent = `${Math.round((diff / finalOriginal) * 100)}%`;
+    } else {
       const percentage = Math.round((diff / finalOriginal) * 100);
       if (discountEl) discountEl.textContent = `${percentage}%`;
+
       if (savingEl) {
         savingEl.innerHTML = `
           <span class="save-label">وفر:</span>
@@ -225,19 +226,21 @@ if (discountedEl && validDiscounted) {
 
         // 🔥 إضافة النار لو التوفير كبير
         const saveAmount = savingEl.querySelector(".save-amount");
-if (diffInSAR >= 500 && !saveAmount.querySelector("img")) {
-  const fireGif = document.createElement("img");
-  fireGif.src = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj5J9EL4a9cV3VWmcK1ZYD6OYEB-1APv9gggocpaa7jAJXdgvX8Q7QiaAZC9NxcN25f8MTRSYD6SKwT1LSjL0SB1ovJH1SSkRmqH2y3f1NzWGkC0BE-gpj5bTc1OKi3Rfzh44sAAJSvOS5uq7Ut9ETN-V9LgKim0dkmEVmqUWa-2ZGA7FvMAYrVaJgn/w199-h200/fire%20(1).gif";
-  fireGif.alt = "🔥";
-  fireGif.style.cssText = `
-    width: 25px; height: 25px; vertical-align: middle; margin: 0; display: inline;
-  `;
-  saveAmount.appendChild(fireGif);
+        if (diffInSAR >= 500 && !saveAmount.querySelector("img")) {
+          const fireGif = document.createElement("img");
+          fireGif.src =
+            "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj5J9EL4a9cV3VWmcK1ZYD6OYEB-1APv9gggocpaa7jAJXdgvX8Q7QiaAZC9NxcN25f8MTRSYD6SKwT1LSjL0SB1ovJH1SSkRmqH2y3f1NzWGkC0BE-gpj5bTc1OKi3Rfzh44sAAJSvOS5uq7Ut9ETN-V9LgKim0dkmEVmqUWa-2ZGA7FvMAYrVaJgn/w199-h200/fire%20(1).gif";
+          fireGif.alt = "🔥";
+          fireGif.style.cssText = `
+            width: 25px; height: 25px; vertical-align: middle; margin: 0; display: inline;
+          `;
+          saveAmount.appendChild(fireGif);
+        }
       }
-     }
     }
-   }
-  }    
+  }
+}
+
 // ==============================
 // ✅ الرسم البياني 
 // ==============================
