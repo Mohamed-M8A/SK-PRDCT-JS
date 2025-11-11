@@ -233,10 +233,10 @@ const gifSize = isMobile ? 0.9 : 1.2;
 const marginL = isMobile ? 0.25 : 0.35;
 
 fireGif.style.cssText = `
-  width: ${gifSize}em;
-  height: ${gifSize}em;
+  width: 2em;
+  height: 2em;
   vertical-align: middle;
-  margin-left: ${marginL}em;
+  margin-left: 2em;
   display: inline-block;
   object-fit: contain;
   position: relative;
