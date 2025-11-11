@@ -229,19 +229,19 @@ if (validOriginal || validDiscounted) {
 
   // ⚙️ تحكم كامل هنا
   const isMobile = window.innerWidth <= 600;
-  const gifSize = isMobile ? 1.4 : 1.7; 
-  const maxH = isMobile ? 1.5 : 1.6;   
-  const marginL = 0.4;              
+const gifSize = isMobile ? 1.2 : 1.5; 
+const marginL = isMobile ? 0.3 : 0.4;
 
-  fireGif.style.cssText = `
-    width: ${gifSize}em;
-    height: auto;
-    max-height: ${maxH}em;
-    vertical-align: middle;
-    margin-left: ${marginL}em;
-    display: inline-block;
-    object-fit: contain;
-  `;
+fireGif.style.cssText = `
+  width: ${gifSize}em;
+  height: ${gifSize}em;
+  vertical-align: middle;
+  margin-left: ${marginL}em;
+  display: inline-block;
+  object-fit: contain;
+  position: relative;
+  top: -0.1em;
+`;
 
   saveAmount.appendChild(fireGif);
         }
