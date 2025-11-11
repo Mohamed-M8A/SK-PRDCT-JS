@@ -156,19 +156,20 @@ if (!hasShipping || !isAvailable) {
   /* ===================================================
      💰 الأسعار + الخصم + التوفير
   =================================================== */
-const originalEl = document.querySelector(".price-original");
-const discountedEl = document.querySelector(".price-discounted");
-const savingEl = document.querySelector(".price-saving");
-const discountEl = document.querySelector(".discount-percentage");
+  const originalEl = document.querySelector(".price-original");
+  const discountedEl = document.querySelector(".price-discounted");
+  const savingEl = document.querySelector(".price-saving");
+  const discountEl = document.querySelector(".discount-percentage");
 
-const original = countryData["price-original"];
-const discounted = countryData["price-discounted"];
+  const original = countryData["price-original"];
+  const discounted = countryData["price-discounted"];
 
-// تحقق من القيم
-const validOriginal = parseFloat(original) || null;
-const validDiscounted = parseFloat(discounted) || null;
+  // تحقق من القيم
+  const validOriginal = parseFloat(original) || null;
+  const validDiscounted = parseFloat(discounted) || null;
 
-if (validOriginal || validDiscounted) {
+  if (validOriginal || validDiscounted) {
+
   const finalOriginal = validOriginal || validDiscounted;
   const finalDiscounted =
     validDiscounted && validDiscounted < finalOriginal
@@ -182,11 +183,12 @@ if (validOriginal || validDiscounted) {
     originalEl.textContent = "";
   }
 
-  if (discountedEl && validDiscounted) {
-    discountedEl.textContent = `${formatPrice(validDiscounted)} ${getCurrencySymbol()}`;
-  } else if (discountedEl) {
-    discountedEl.textContent = "";
-  }
+if (discountedEl && validDiscounted) {
+  discountedEl.textContent = `${formatPrice(validDiscounted)} ${getCurrencySymbol()}`;
+} else if (discountedEl) {
+  discountedEl.textContent = "";
+}
+
 
   // حساب الفرق فقط لو في خصم حقيقي
   const diff = finalOriginal - finalDiscounted;
@@ -195,66 +197,47 @@ if (validOriginal || validDiscounted) {
     const diffInSAR = diff * rate;
 
     // لو أقل من 50 ريال سعودي → نخفي الخصم والتوفير فقط
-    if (diffInSAR < 50) {
+      if (diffInSAR < 50) {
       if (savingEl) savingEl.innerHTML = "";
-      if (discountEl)
-        discountEl.textContent = `${Math.round((diff / finalOriginal) * 100)}%`;
-    } else {
+      if (discountEl) discountEl.textContent = `${Math.round((diff / finalOriginal) * 100)}%`;
+      } else {
       const percentage = Math.round((diff / finalOriginal) * 100);
       if (discountEl) discountEl.textContent = `${percentage}%`;
-
       if (savingEl) {
         savingEl.innerHTML = `
           <span class="save-label">وفر:</span>
           <span class="save-amount">${formatPrice(diff)} ${getCurrencySymbol()}</span>
         `;
 
-        // 🎨 ألوان حسب قيمة التوفير المكافئة (8 تدرجات جديدة متناسقة)
-let color = "#7f8c8d"; // رمادي بسيط
-if (diffInSAR >= 100 && diffInSAR < 250) color = "#16a085";   // تركواز غامق
-else if (diffInSAR < 400) color = "#1abc9c";                  // تركواز فاتح
-else if (diffInSAR < 600) color = "#2ecc71";                  // أخضر ناعم
-else if (diffInSAR < 900) color = "#f1c40f";                  // ذهبي
-else if (diffInSAR < 1200) color = "#e67e22";                 // برتقالي
-else if (diffInSAR < 1600) color = "#c0392b";                 // أحمر دافئ
-else if (diffInSAR < 2000) color = "#f5008b";                 // وردي قوي
-else if (diffInSAR < 3000) color = "#8e44ad";                 // بنفسجي ملكي
-else color = "#f39c12";                                       // ذهبي لامع نهائي
+        // ألوان حسب قيمة التوفير المكافئة
+        let color = "#2c3e50";
+        if (diffInSAR >= 100 && diffInSAR < 200) color = "#1abc9c";
+        else if (diffInSAR < 400) color = "#2ecc71";
+        else if (diffInSAR < 600) color = "#e67e22";
+        else if (diffInSAR < 1000) color = "#c0392b";
+        else if (diffInSAR < 1500) color = "#f5008b";
+        else if (diffInSAR < 2000) color = "#8e44ad";
+        else color = "#f39c12";
 
-savingEl.style.color = color;
-savingEl.style.fontWeight = "bold";
-savingEl.title = `الفرق بين السعر القديم (${formatPrice(finalOriginal)}) والجديد (${formatPrice(finalDiscounted)})`;
+        savingEl.style.color = color;
+        savingEl.style.fontWeight = "bold";
+        savingEl.title = `الفرق بين السعر القديم (${formatPrice(finalOriginal)}) والجديد (${formatPrice(finalDiscounted)})`;
 
-// 🔥 إضافة الجيف مع تحكم ذكي في الحجم عبر الجافاسكربت
-const saveAmount = savingEl.querySelector(".save-amount");
+        // 🔥 إضافة النار لو التوفير كبير
+        const saveAmount = savingEl.querySelector(".save-amount");
 if (diffInSAR >= 500 && !saveAmount.querySelector("img")) {
   const fireGif = document.createElement("img");
-  fireGif.src =
-    "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj5J9EL4a9cV3VWmcK1ZYD6OYEB-1APv9gggocpaa7jAJXdgvX8Q7QiaAZC9NxcN25f8MTRSYD6SKwT1LSjL0SB1ovJH1SSkRmqH2y3f1NzWGkC0BE-gpj5bTc1OKi3Rfzh44sAAJSvOS5uq7Ut9ETN-V9LgKim0dkmEVmqUWa-2ZGA7FvMAYrVaJgn/w199-h200/fire%20(1).gif";
+  fireGif.src = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj5J9EL4a9cV3VWmcK1ZYD6OYEB-1APv9gggocpaa7jAJXdgvX8Q7QiaAZC9NxcN25f8MTRSYD6SKwT1LSjL0SB1ovJH1SSkRmqH2y3f1NzWGkC0BE-gpj5bTc1OKi3Rfzh44sAAJSvOS5uq7Ut9ETN-V9LgKim0dkmEVmqUWa-2ZGA7FvMAYrVaJgn/w199-h200/fire%20(1).gif";
   fireGif.alt = "🔥";
-
-  // 👇 تحكم ديناميكي في الحجم حسب نوع الجهاز
-  const isMobile = window.innerWidth <= 600;
-  const baseSize = isMobile ? 16 : 22;
-
   fireGif.style.cssText = `
-    width: ${baseSize}px;
-    height: ${baseSize}px;
-    vertical-align: middle;
-    margin-left: 5px;
-    display: inline-block;
-    object-fit: contain;
+    width: 25px; height: 25px; vertical-align: middle; margin: 0; display: inline;
   `;
-
-  // ✨ لو التوفير ضخم جدًا ممكن نخليه يكبر شوي
-  if (diffInSAR >= 2000) {
-    fireGif.style.width = `${baseSize + 6}px`;
-    fireGif.style.height = `${baseSize + 6}px`;
-  }
-
   saveAmount.appendChild(fireGif);
-}
-
+      }
+     }
+    }
+   }
+  }    
 // ==============================
 // ✅ الرسم البياني 
 // ==============================
