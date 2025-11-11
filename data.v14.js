@@ -228,20 +228,28 @@ if (validOriginal || validDiscounted) {
           fireGif.alt = "🔥";
 
   // ⚙️ تحكم كامل هنا
-const isMobile = window.innerWidth <= 600;
-const gifSize = isMobile ? 0.4 : 0.6;
-const marginL = isMobile ? 0.2 : 0.3;
-           
-fireGif.style.cssText = `
-  width: ${gifSize}em;
-  height: ${gifSize}em;
-  vertical-align: middle;
-  margin-left: ${marginL}em;
-  display: inline-block;
-  object-fit: contain;
-  position: relative;
-  top: -0.08em;
-`;
+function setGifSize() {
+  const isMobile = window.innerWidth <= 600;
+  const gifSize = isMobile ? 0.8 : 1; // وسط مابين صغير وواضح
+  const marginL = isMobile ? 0.25 : 0.35;
+
+  fireGif.style.cssText = `
+    width: ${gifSize}em;
+    height: ${gifSize}em;
+    vertical-align: middle;
+    margin-left: ${marginL}em;
+    display: inline-block;
+    object-fit: contain;
+    position: relative;
+    top: -0.08em;
+  `;
+}
+
+// أول مرة تتحمل الصفحة
+setGifSize();
+
+// تحديث عند تغيير حجم الشاشة
+window.addEventListener("resize", setGifSize);
 
   saveAmount.appendChild(fireGif);
         }
