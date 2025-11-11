@@ -229,7 +229,7 @@ if (validOriginal || validDiscounted) {
 
           // ✅ الحجم الجديد المتناسق مع .price-saving
           const isMobile = window.innerWidth <= 600;
-          const gifSize = isMobile ? 1.1 : 1.35; // em متناسبة مع النص
+          const gifSize = isMobile ? 1.3 : 1.6; // em متناسبة مع النص
 
           fireGif.style.cssText = `
             width: ${gifSize}em;
