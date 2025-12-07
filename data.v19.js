@@ -154,7 +154,7 @@ if (!hasShipping || !isAvailable) {
 }
 
   /* ===================================================
-     💰 الأسعار + الخصم + التوفير
+     ✅Prices
   =================================================== */
 const originalEl = document.querySelector(".price-original");
 const discountedEl = document.querySelector(".price-discounted");
@@ -257,158 +257,139 @@ if (validOriginal || validDiscounted) {
 }
 
 // ==============================
-// ✅ الرسم البياني 
+// ✅ Chart
 // ==============================
 
-  try {
-    // ✅ جلب بيانات تاريخ الأسعار من نفس countryData
-    const priceHistory = Array.isArray(countryData["price-history"])
-      ? countryData["price-history"]
-      : [];
+try {
+  const priceHistory = Array.isArray(countryData["price-history"])
+    ? countryData["price-history"]
+    : [];
 
-    // ✅ لو مفيش بيانات سعر → إخفاء القسم والخروج
-    if (!priceHistory.length) {
-  const chartCanvas = document.getElementById("priceChart");
-  if (chartCanvas) chartCanvas.parentElement.style.display = "none";
-  return;
-}
+  if (!priceHistory.length) {
+    const chartCanvas = document.getElementById("priceChart");
+    if (chartCanvas) chartCanvas.parentElement.style.display = "none";
+    return;
+  }
 
+  const merged = {};
+  priceHistory.forEach(item => {
+    if (!merged[item.date]) merged[item.date] = { total: 0, count: 0 };
+    merged[item.date].total += item.price;
+    merged[item.date].count += 1;
+  });
 
-    // ✅ دمج الأسعار في نفس التاريخ (حساب المتوسط)
-    const merged = {};
-    priceHistory.forEach(item => {
-      if (!merged[item.date]) merged[item.date] = { total: 0, count: 0 };
-      merged[item.date].total += item.price;
-      merged[item.date].count += 1;
-    });
-
-    // ✅ إنشاء مصفوفة نهائية بالتاريخ والمتوسط لكل يوم
-    const finalData = Object.entries(merged).map(([date, { total, count }]) => ({
+  const finalData = Object.entries(merged).map(([date, { total, count }]) => ({
     date,
     price: +(total / count).toFixed(2)
-    }));
+  }));
 
-    // ✅ استخراج القيم (الأسعار + التواريخ)
-    const prices = finalData.map(x => x.price);
-    const dates = finalData.map(x => x.date);
+  const prices = finalData.map(x => x.price);
+  const dates = finalData.map(x => x.date);
 
-    // ✅ حساب الإحصائيات العامة
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
-    const avg = +(prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2);
-    const endPrice = prices[prices.length - 1];
-    const prevPrice = prices[prices.length - 2] || endPrice;
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const avg = +(prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2);
+  const endPrice = prices[prices.length - 1];
+  const prevPrice = prices[prices.length - 2] || endPrice;
 
-    // ✅ دالة لتحديد السهم الصاعد أو الهابط
-    const getArrow = (value, compare) => {
-      if (value > compare) return `<span class="stat-arrow arrow-up">▲</span>`;
-      if (value < compare) return `<span class="stat-arrow arrow-down">▼</span>`;
-      return "";
-    };
+  const getArrow = (value, compare) => {
+    if (value > compare) return `<span class="stat-arrow arrow-up">▲</span>`;
+    if (value < compare) return `<span class="stat-arrow arrow-down">▼</span>`;
+    return "";
+  };
 
-    // ✅ إنشاء إحصائيات الأسعار أسفل الرسم البياني
-    const stats = `
-      <div class="price-stats">
-        <div class="stat-item current">
-          <strong>السعر الحالي:</strong> ${endPrice} ${getCurrencySymbol()} ${getArrow(endPrice, prevPrice)}
-          <small style="font-size:12px;color:#666;">(${(endPrice - prevPrice).toFixed(2)} ${getCurrencySymbol()})</small>
-        </div>
-        <div class="stat-item"><strong>المتوسط:</strong> ${avg} ${getCurrencySymbol()} ${getArrow(avg, endPrice)}</div>
-        <div class="stat-item"><strong>أقل سعر:</strong> ${min} ${getCurrencySymbol()} ${getArrow(min, endPrice)}</div>
-        <div class="stat-item"><strong>أعلى سعر:</strong> ${max} ${getCurrencySymbol()} ${getArrow(max, endPrice)}</div>
+  const stats = `
+    <div class="price-stats">
+      <div class="stat-item current">
+        <strong>السعر الحالي:</strong> ${endPrice} ${getCurrencySymbol()} ${getArrow(endPrice, prevPrice)}
+        <small style="font-size:12px;color:#666;">(${(endPrice - prevPrice).toFixed(2)} ${getCurrencySymbol()})</small>
       </div>
+      <div class="stat-item"><strong>المتوسط:</strong> ${avg} ${getCurrencySymbol()} ${getArrow(avg, endPrice)}</div>
+      <div class="stat-item"><strong>أقل سعر:</strong> ${min} ${getCurrencySymbol()} ${getArrow(min, endPrice)}</div>
+      <div class="stat-item"><strong>أعلى سعر:</strong> ${max} ${getCurrencySymbol()} ${getArrow(max, endPrice)}</div>
+    </div>
+  `;
+  document.getElementById("priceChart")?.insertAdjacentHTML("afterend", stats);
+
+  const tooltipEl = document.createElement("div");
+  tooltipEl.id = "chart-tooltip";
+  document.body.appendChild(tooltipEl);
+
+  const externalTooltipHandler = (context) => {
+    const { chart, tooltip } = context;
+    const el = tooltipEl;
+
+    if (tooltip.opacity === 0) {
+      el.style.opacity = 0;
+      el.style.display = "none";
+      return;
+    }
+
+    el.style.display = "block";
+    el.style.opacity = 1;
+
+    const dataIndex = tooltip.dataPoints[0].dataIndex;
+    const value = tooltip.dataPoints[0].raw;
+    const prev = dataIndex > 0 ? finalData[dataIndex - 1].price : value;
+    const diff = +(value - prev).toFixed(2);
+    const percent = prev !== 0 ? ((diff / prev) * 100).toFixed(1) : 0;
+
+    const arrow = diff > 0
+      ? `<span class="stat-arrow arrow-up">▲</span>`
+      : diff < 0
+        ? `<span class="stat-arrow arrow-down">▼</span>`
+        : `<span class="stat-arrow">-</span>`;
+
+    const date = finalData[dataIndex].date;
+
+    el.innerHTML = `
+      <div class="tooltip-line" style="font-weight:bold;">${date}</div>
+      <div class="tooltip-line">السعر: ${value} ${getCurrencySymbol()}</div>
+      <div class="tooltip-line">التغير: ${arrow} ${diff} ${getCurrencySymbol()}</div>
+      <div class="tooltip-line">النسبة: ${percent}%</div>
     `;
 
-    // ✅ إدراج الإحصائيات بعد الرسم البياني مباشرة
-    document.getElementById("priceChart")?.insertAdjacentHTML("afterend", stats);
+    const position = chart.canvas.getBoundingClientRect();
+    const tooltipWidth = 160;
+    const pageWidth = window.innerWidth;
+    const chartLeft = position.left + window.pageXOffset;
+    const pointX = chartLeft + tooltip.caretX;
 
-    // ✅ إعداد التولتيب (Tooltip) المخصص
-    const tooltipEl = document.createElement("div");
-    tooltipEl.id = "chart-tooltip";
-    document.body.appendChild(tooltipEl);
+    el.style.left = pointX > pageWidth * 0.7
+      ? (pointX - tooltipWidth - 20) + 'px'
+      : (pointX + 10) + 'px';
 
-    // ✅ دالة لتنسيق التولتيب الخارجي
-    const externalTooltipHandler = (context) => {
-      const { chart, tooltip } = context;
-      const el = tooltipEl;
+    el.style.top = position.top + window.pageYOffset + tooltip.caretY - 40 + 'px';
+  };
 
-      if (tooltip.opacity === 0) {
-        el.style.opacity = 0;
-        el.style.display = "none";
-        return;
-      }
-
-      el.style.display = "block";
-      el.style.opacity = 1;
-
-      const dataIndex = tooltip.dataPoints[0].dataIndex;
-      const value = tooltip.dataPoints[0].raw;
-      const prev = dataIndex > 0 ? finalData[dataIndex - 1].price : value;
-      const diff = +(value - prev).toFixed(2);
-      const percent = prev !== 0 ? ((diff / prev) * 100).toFixed(1) : 0;
-
-      const arrow = diff > 0
-        ? `<span class="stat-arrow arrow-up">▲</span>`
-        : diff < 0
-          ? `<span class="stat-arrow arrow-down">▼</span>`
-          : `<span class="stat-arrow">-</span>`;
-
-      const date = finalData[dataIndex].date;
-
-      el.innerHTML = `
-        <div class="tooltip-line" style="font-weight:bold;">${date}</div>
-        <div class="tooltip-line">السعر: ${value} ${getCurrencySymbol()}</div>
-        <div class="tooltip-line">التغير: ${arrow} ${diff} ${getCurrencySymbol()}</div>
-        <div class="tooltip-line">النسبة: ${percent}%</div>
-      `;
-
-      const position = chart.canvas.getBoundingClientRect();
-      const tooltipWidth = 160;
-      const pageWidth = window.innerWidth;
-      const chartLeft = position.left + window.pageXOffset;
-      const pointX = chartLeft + tooltip.caretX;
-
-      if (pointX > pageWidth * 0.7) {
-        el.style.left = (pointX - tooltipWidth - 20) + 'px';
-      } else {
-        el.style.left = (pointX + 10) + 'px';
-      }
-
-      el.style.top = position.top + window.pageYOffset + tooltip.caretY - 40 + 'px';
-    };
-
-    // ✅ إنشاء الرسم البياني باستخدام Chart.js
-    const ctx = document.getElementById("priceChart")?.getContext("2d");
-    if (ctx) {
-      new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: dates,
-          datasets: [{
-            label: "السعر",
-            data: finalData.map(d => d.price),
-            borderColor: "#2c3e50",
-            backgroundColor: "rgba(44,62,80,0.1)",
-            borderWidth: 3,
-            pointRadius: 4,
-            pointHoverRadius: 6,
-            fill: true,
-            tension: 0.2
-          }]
-        },
-        options: {
-          responsive: true,
-          interaction: { mode: 'index', intersect: false },
-          plugins: { tooltip: { enabled: false, external: externalTooltipHandler } },
-          scales: {
-            x: { title: { display: true, text: "التاريخ" } },
-            y: { title: { display: true, text: `السعر (${getCurrencySymbol()})` } }
-          }
+  // إنشاء الرسم البياني
+  const ctx = document.getElementById("priceChart")?.getContext("2d");
+  if (ctx) {
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: dates,
+        datasets: [{
+          label: "السعر",
+          data: finalData.map(d => d.price),
+          borderColor: "#8B0000",
+          backgroundColor: "rgba(139,0,0,0.1)",
+          borderWidth: 3,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          fill: true,
+          tension: 0.2
+        }]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: { tooltip: { enabled: false, external: externalTooltipHandler } },
+        scales: {
+          x: { title: { display: true, text: "التاريخ" } },
+          y: { title: { display: true, text: `السعر (${getCurrencySymbol()})` } }
         }
-      });
-    }
-   
-  } catch (err) {
-    console.error("❌ خطأ أثناء تحميل بيانات الرسم البياني:", err);
+      }
+    });
   }
-});
+} catch {}
