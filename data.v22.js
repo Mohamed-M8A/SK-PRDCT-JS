@@ -260,21 +260,17 @@ if (validOriginal || validDiscounted) {
 // ✅ الرسم البياني 
 // ==============================
 
-  try {
-    // ✅ جلب بيانات تاريخ الأسعار من نفس countryData
+try {
     const priceHistory = Array.isArray(countryData["price-history"])
       ? countryData["price-history"]
       : [];
 
-    // ✅ لو مفيش بيانات سعر → إخفاء القسم والخروج
     if (!priceHistory.length) {
-  const chartCanvas = document.getElementById("priceChart");
-  if (chartCanvas) chartCanvas.parentElement.style.display = "none";
-  return;
-}
+      const chartCanvas = document.getElementById("priceChart");
+      if (chartCanvas) chartCanvas.parentElement.style.display = "none";
+      return;
+    }
 
-
-    // ✅ دمج الأسعار في نفس التاريخ (حساب المتوسط)
     const merged = {};
     priceHistory.forEach(item => {
       if (!merged[item.date]) merged[item.date] = { total: 0, count: 0 };
@@ -282,31 +278,26 @@ if (validOriginal || validDiscounted) {
       merged[item.date].count += 1;
     });
 
-    // ✅ إنشاء مصفوفة نهائية بالتاريخ والمتوسط لكل يوم
     const finalData = Object.entries(merged).map(([date, { total, count }]) => ({
-    date,
-    price: +(total / count).toFixed(2)
+      date,
+      price: +(total / count).toFixed(2)
     }));
 
-    // ✅ استخراج القيم (الأسعار + التواريخ)
     const prices = finalData.map(x => x.price);
     const dates = finalData.map(x => x.date);
 
-    // ✅ حساب الإحصائيات العامة
     const min = Math.min(...prices);
     const max = Math.max(...prices);
     const avg = +(prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2);
     const endPrice = prices[prices.length - 1];
     const prevPrice = prices[prices.length - 2] || endPrice;
 
-    // ✅ دالة لتحديد السهم الصاعد أو الهابط
     const getArrow = (value, compare) => {
       if (value > compare) return `<span class="stat-arrow arrow-up">▲</span>`;
       if (value < compare) return `<span class="stat-arrow arrow-down">▼</span>`;
       return "";
     };
 
-    // ✅ إنشاء إحصائيات الأسعار أسفل الرسم البياني
     const stats = `
       <div class="price-stats">
         <div class="stat-item current">
@@ -319,15 +310,12 @@ if (validOriginal || validDiscounted) {
       </div>
     `;
 
-    // ✅ إدراج الإحصائيات بعد الرسم البياني مباشرة
     document.getElementById("priceChart")?.insertAdjacentHTML("afterend", stats);
 
-    // ✅ إعداد التولتيب (Tooltip) المخصص
     const tooltipEl = document.createElement("div");
     tooltipEl.id = "chart-tooltip";
     document.body.appendChild(tooltipEl);
 
-    // ✅ دالة لتنسيق التولتيب الخارجي
     const externalTooltipHandler = (context) => {
       const { chart, tooltip } = context;
       const el = tooltipEl;
@@ -377,7 +365,6 @@ if (validOriginal || validDiscounted) {
       el.style.top = position.top + window.pageYOffset + tooltip.caretY - 40 + 'px';
     };
 
-    // ✅ إنشاء الرسم البياني باستخدام Chart.js
     const ctx = document.getElementById("priceChart")?.getContext("2d");
     if (ctx) {
       new Chart(ctx, {
@@ -387,8 +374,8 @@ if (validOriginal || validDiscounted) {
           datasets: [{
             label: "السعر",
             data: finalData.map(d => d.price),
-            borderColor: "#2c3e50",
-            backgroundColor: "rgba(44,62,80,0.1)",
+            borderColor: "#e74c3c", 
+            backgroundColor: "rgba(231,76,60,0.2)", 
             borderWidth: 3,
             pointRadius: 4,
             pointHoverRadius: 6,
@@ -409,6 +396,6 @@ if (validOriginal || validDiscounted) {
     }
    
   } catch (err) {
-    console.error("❌ خطأ أثناء تحميل بيانات الرسم البياني:", err);
   }
+   
 });
