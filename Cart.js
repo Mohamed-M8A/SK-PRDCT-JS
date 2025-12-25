@@ -66,6 +66,7 @@ function addToCart(productUrl, clean = false) {
 
   cart.push({ productUrl });
   localStorage.setItem("cart", JSON.stringify(cart));
+  window.dispatchEvent(new Event("cartUpdated"));
   showCartToast("تمت إضافة المنتج إلى العربة بنجاح!", "success");
 }
 
@@ -89,7 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", handleAddToCart);
   });
 
-  // ربط زر الكوبون
   const couponBtn = document.querySelector(".copy-button");
   if (couponBtn) {
     couponBtn.addEventListener("click", (e) => {
